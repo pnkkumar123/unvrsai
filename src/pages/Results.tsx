@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
-import { Activity, Download, Share2, ArrowLeft, CheckCircle2, AlertCircle, Info } from "lucide-react";
+import { Activity, Download, Share2, ArrowLeft, CheckCircle2, AlertCircle, Info, TrendingUp } from "lucide-react";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis, Area, AreaChart, Bar, BarChart } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../components/ui/chart";
 
 const Results = () => {
   const metrics = [
@@ -9,6 +11,21 @@ const Results = () => {
     { label: "Blood Oxygen", value: "98", unit: "%", status: "good", trend: "+1" },
     { label: "Heart Rate", value: "72", unit: "bpm", status: "normal", trend: "0" },
     { label: "Stress Level", value: "Low", unit: "", status: "good", trend: "-5" },
+  ];
+
+  const trendData = [
+    { month: "Jan", score: 82, oxygen: 96, heartRate: 75 },
+    { month: "Feb", score: 84, oxygen: 97, heartRate: 74 },
+    { month: "Mar", score: 83, oxygen: 97, heartRate: 73 },
+    { month: "Apr", score: 85, oxygen: 98, heartRate: 73 },
+    { month: "May", score: 87, oxygen: 98, heartRate: 72 },
+  ];
+
+  const systemHealthData = [
+    { system: "Cardiovascular", score: 92 },
+    { system: "Metabolic", score: 85 },
+    { system: "Stress", score: 88 },
+    { system: "Respiratory", score: 90 },
   ];
 
   const insights = [
@@ -115,6 +132,64 @@ const Results = () => {
             ))}
           </div>
 
+          {/* Health Trends Chart */}
+          <Card className="p-8 border-border bg-card mb-8 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">Health Trends</h2>
+              <div className="flex items-center text-sm text-accent">
+                <TrendingUp className="h-4 w-4 mr-1" />
+                <span>+5% improvement</span>
+              </div>
+            </div>
+            <ChartContainer
+              config={{
+                score: { label: "Health Score", color: "hsl(var(--primary))" },
+                oxygen: { label: "Blood Oxygen", color: "hsl(var(--accent))" },
+                heartRate: { label: "Heart Rate", color: "hsl(var(--chart-3))" },
+              }}
+              className="h-[300px]"
+            >
+              <AreaChart data={trendData}>
+                <defs>
+                  <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <XAxis dataKey="month" className="text-xs" />
+                <YAxis className="text-xs" />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Area
+                  type="monotone"
+                  dataKey="score"
+                  stroke="hsl(var(--primary))"
+                  fill="url(#colorScore)"
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ChartContainer>
+          </Card>
+
+          {/* System Health Chart */}
+          <Card className="p-8 border-border bg-card mb-8 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+            <h2 className="text-2xl font-bold mb-6">System Health Comparison</h2>
+            <ChartContainer
+              config={{
+                score: { label: "Health Score", color: "hsl(var(--accent))" },
+              }}
+              className="h-[300px]"
+            >
+              <BarChart data={systemHealthData}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <XAxis dataKey="system" className="text-xs" />
+                <YAxis className="text-xs" domain={[0, 100]} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="score" fill="hsl(var(--accent))" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ChartContainer>
+          </Card>
+
           {/* Health Insights */}
           <div className="mb-12">
             <h2 className="text-2xl font-bold mb-6">AI Health Insights</h2>
@@ -123,7 +198,7 @@ const Results = () => {
                 <Card
                   key={index}
                   className="p-6 border-border bg-card animate-fade-in"
-                  style={{ animationDelay: `${0.3 + index * 0.1}s` }}
+                  style={{ animationDelay: `${0.5 + index * 0.1}s` }}
                 >
                   <div className="flex items-start space-x-4">
                     {insight.type === "positive" && (
@@ -146,7 +221,7 @@ const Results = () => {
           </div>
 
           {/* Detailed Analysis */}
-          <Card className="p-8 border-border bg-card mb-8 animate-fade-in" style={{ animationDelay: "0.6s" }}>
+          <Card className="p-8 border-border bg-card mb-8 animate-fade-in" style={{ animationDelay: "0.8s" }}>
             <h2 className="text-2xl font-bold mb-6">Detailed Analysis</h2>
             <div className="space-y-6">
               <div>
@@ -186,7 +261,7 @@ const Results = () => {
           </Card>
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.7s" }}>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.9s" }}>
             <Link to="/scan">
               <Button variant="hero" size="lg">
                 Schedule Next Scan
